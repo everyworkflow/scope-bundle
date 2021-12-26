@@ -9,17 +9,15 @@ declare(strict_types=1);
 namespace EveryWorkflow\ScopeBundle\Repository;
 
 use EveryWorkflow\MongoBundle\Repository\BaseDocumentRepository;
-use EveryWorkflow\CoreBundle\Annotation\RepoDocument;
+use EveryWorkflow\MongoBundle\Support\Attribute\RepositoryAttribute;
 use EveryWorkflow\ScopeBundle\Document\ScopeDocument;
+use EveryWorkflow\ScopeBundle\Document\ScopeDocumentInterface;
 
-/**
- * Class ScopeRepository
- * @package EveryWorkflow\ScopeBundle\Repository
- * @RepoDocument(doc_name=ScopeDocument::class)
- */
+#[RepositoryAttribute(documentClass: ScopeDocument::class, primaryKey: 'code')]
 class ScopeRepository extends BaseDocumentRepository implements ScopeRepositoryInterface
 {
-    protected string $collectionName = 'scope_collection';
-
-    protected array $indexNames = ['code'];
+    public function findByCode(string $code): ?ScopeDocumentInterface
+    {
+        return $this->findOne(['code' => $code]);
+    }
 }

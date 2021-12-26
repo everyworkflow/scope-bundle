@@ -6,23 +6,24 @@
 
 declare(strict_types=1);
 
-namespace EveryWorkflow\ScopeBundle\Controller\Admin\Scope;
+namespace EveryWorkflow\ScopeBundle\Controller;
 
+use EveryWorkflow\CoreBundle\Annotation\EwRoute;
 use EveryWorkflow\ScopeBundle\Repository\ScopeRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
 
 class ListScopeController extends AbstractController
 {
-    /**
-     * @Route(
-     *     path="admin_api/scopes",
-     *     name="admin_scope_list",
-     *     methods="GET"
-     * )
-     */
+    #[EwRoute(
+        path: "scope",
+        name: 'scope',
+        priority: 10,
+        methods: 'GET',
+        permissions: 'scope.list',
+        swagger: true
+    )]
     public function __invoke(Request $request, ScopeRepositoryInterface $scopeRepository): JsonResponse
     {
         $items = [];
@@ -35,6 +36,6 @@ class ListScopeController extends AbstractController
         foreach ($scopes as $scope) {
             $items[] = $scope->toArray();
         }
-        return (new JsonResponse())->setData(['items' => $items]);
+        return new JsonResponse(['items' => $items]);
     }
 }

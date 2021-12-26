@@ -11,17 +11,14 @@ namespace EveryWorkflow\ScopeBundle\Document;
 use EveryWorkflow\MongoBundle\Document\BaseDocument;
 use EveryWorkflow\MongoBundle\Document\HelperTrait\CreatedUpdatedHelperTrait;
 use EveryWorkflow\MongoBundle\Document\HelperTrait\StatusHelperTrait;
-use EveryWorkflow\CoreBundle\Annotation\EWFDataTypes;
+use EveryWorkflow\CoreBundle\Validation\Type\NumberValidation;
+use EveryWorkflow\CoreBundle\Validation\Type\StringValidation;
 
 class ScopeDocument extends BaseDocument implements ScopeDocumentInterface
 {
     use CreatedUpdatedHelperTrait, StatusHelperTrait;
 
-    /**
-     * @param string $code
-     * @return $this
-     * @EWFDataTypes (type="string", mongofield=self::KEY_CODE, required=TRUE, minLength=5, maxLength=20)
-     */
+    #[StringValidation(required: true, minLength: 2, maxLength: 20)]
     public function setCode(string $code): self
     {
         $this->dataObject->setData(self::KEY_CODE, $code);
@@ -33,11 +30,7 @@ class ScopeDocument extends BaseDocument implements ScopeDocumentInterface
         return $this->dataObject->getData(self::KEY_CODE);
     }
 
-    /**
-     * @param string $name
-     * @return $this
-     * @EWFDataTypes (type="string", mongofield=self::KEY_NAME, required=TRUE)
-     */
+    #[StringValidation(required: true, minLength: 2, maxLength: 50)]
     public function setName($name): self
     {
         $this->dataObject->setData(self::KEY_NAME, $name);
@@ -50,12 +43,20 @@ class ScopeDocument extends BaseDocument implements ScopeDocumentInterface
         return $this->dataObject->getData(self::KEY_NAME);
     }
 
+    #[StringValidation(required: true, minLength: 2, maxLength: 20)]
+    public function setParent(string $parentCode): self
+    {
+        $this->dataObject->setData(self::KEY_PARENT, $parentCode);
 
-    /**
-     * @param int $sortOrder
-     * @return $this
-     * @EWFDataTypes (type="integer", mongofield=self::KEY_SORT_ORDER, required=TRUE)
-     */
+        return $this;
+    }
+
+    public function getParent(): ?string
+    {
+        return $this->dataObject->getData(self::KEY_PARENT);
+    }
+
+    #[NumberValidation(minium: 1)]
     public function setSortOrder($sortOrder): self
     {
         $this->dataObject->setData(self::KEY_SORT_ORDER, $sortOrder);
@@ -68,10 +69,6 @@ class ScopeDocument extends BaseDocument implements ScopeDocumentInterface
         return $this->dataObject->getData(self::KEY_SORT_ORDER);
     }
 
-    /**
-     * @param array $sortOrder
-     * @return $this
-     */
     public function setChildren(array $children): self
     {
         $this->dataObject->setData(self::KEY_CHILDREN, $children);
@@ -83,5 +80,4 @@ class ScopeDocument extends BaseDocument implements ScopeDocumentInterface
     {
         return $this->dataObject->getData(self::KEY_CHILDREN);
     }
-
 }

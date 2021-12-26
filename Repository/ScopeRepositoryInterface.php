@@ -9,8 +9,9 @@ declare(strict_types=1);
 namespace EveryWorkflow\ScopeBundle\Repository;
 
 use EveryWorkflow\MongoBundle\Repository\BaseDocumentRepositoryInterface;
+use EveryWorkflow\ScopeBundle\Document\ScopeDocumentInterface;
 
 interface ScopeRepositoryInterface extends BaseDocumentRepositoryInterface
 {
-    // Something
+    public function findByCode(string $code): ?ScopeDocumentInterface;
 }
