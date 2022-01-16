@@ -54,7 +54,31 @@ class GetScopeController extends AbstractController
         }
 
         $data['data_form'] = $this->scopeForm->toArray();
+        foreach ($data['data_form']['fields'] as &$field) {
+            if ('parent' === $field['name']) {
+                $skipVals = [];
+                if ($code !== 'default') {
+                    $skipVals[] = $code;
+                }
+                $field['options'] = $this->cleanUpViewingScope($field['options'], $skipVals);
+            }
+        }
 
         return new JsonResponse($data);
+    }
+
+    protected function cleanUpViewingScope(array $options, array $skipVals): array
+    {
+        foreach ($options as $key => &$option) {
+            if (isset($option['value']) && in_array($option['value'], $skipVals, true)) {
+                unset($options[$key]);
+                continue;
+            }
+
+            if (isset($option['children']) && is_array($option['children'])) {
+                $options[$key]['children'] = $this->cleanUpViewingScope($option['children'], $skipVals);
+            }
+        }
+        return array_values($options);
     }
 }

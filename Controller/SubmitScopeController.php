@@ -72,10 +72,14 @@ class SubmitScopeController extends AbstractController
             }
         }
 
+        if (!$item->getData('parent')) {
+            $item->setData('parent', 'default');
+        }
+
         $item = $this->scopeRepository->saveOne($item);
 
         return new JsonResponse([
-            'message' => 'Successfully saved changes.',
+            'detail' => 'Successfully saved changes.',
             'item' => $item->toArray(),
         ]);
     }

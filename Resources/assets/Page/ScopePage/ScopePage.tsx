@@ -10,16 +10,23 @@ import Row from "antd/lib/row";
 import Col from "antd/lib/col";
 import ScopeSidebar from './ScopeSidebar';
 import ScopeForm from './ScopeForm';
+import AdminPanelContext from '@EveryWorkflow/AdminPanelBundle/Context/AdminPanelContext';
+import { ACTION_HIDE_FOOTER, ACTION_SHOW_FOOTER } from '@EveryWorkflow/AdminPanelBundle/Reducer/AdminPanelReducer';
 
 const ScopePage = () => {
     const { dispatch: panelDispatch } = useContext(PanelContext);
-    const { code = '' }: { code: string | undefined } = useParams();
+    const { dispatch: adminPanelDispatch } = useContext(AdminPanelContext);
+    const { code = 'default' }: any = useParams();
 
     useEffect(() => {
         panelDispatch({
             type: ACTION_SET_PAGE_TITLE,
-            payload: code !== '' && code !== 'default' ? 'Edit scope' : 'Scope',
+            payload: code !== 'default' ? 'Edit scope' : 'Scope',
         });
+        adminPanelDispatch({ type: ACTION_HIDE_FOOTER });
+        return () => {
+            adminPanelDispatch({ type: ACTION_SHOW_FOOTER });
+        };
     }, [code]);
 
     return (

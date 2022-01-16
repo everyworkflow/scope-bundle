@@ -47,7 +47,7 @@ class ScopeTreeController extends AbstractController
             return new JsonResponse(['message' => $e->getMessage()], 500);
         }
 
-        $items = $this->fetchRecursively($mainItem->getData('code'));
+        $items = $this->fetchRecursively($mainItem->getData('code'), 99);
         return new JsonResponse(['items' => $items]);
     }
 

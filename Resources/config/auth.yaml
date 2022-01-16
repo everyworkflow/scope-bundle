@@ -1,0 +1,7 @@
+auth:
+  permissions:
+    scope:
+      view: View scope
+      list: List scope
+      save: Save scope
+      delete: Delete scope

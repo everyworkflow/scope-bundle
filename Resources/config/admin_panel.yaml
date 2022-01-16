@@ -1,0 +1,7 @@
+admin_panel:
+    sidebar_menu:
+        system.scope:
+            label: Scope
+            parent: system
+            path: /system/scope
+            sort_order: 5000

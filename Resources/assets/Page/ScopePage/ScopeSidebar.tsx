@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { EventDataNode } from "rc-tree/lib/interface";
 import { DataNode } from 'antd/lib/tree';
 
-const initTreeData: DataNode[] = [{ title: 'Default', key: 'default' }];
+const initTreeData: DataNode[] = [{ title: 'Default - Create new scope', key: 'default' }];
 
 const ScopeSidebar = () => {
     const [treeData, setTreeData] = useState<Array<any>>(initTreeData);
@@ -18,9 +18,13 @@ const ScopeSidebar = () => {
 
     useEffect(() => {
         onLoadData({ key: 'default' }).then();
+        // onLoadData({ key: 'default' }).then();
     }, []);
 
     const updateTreeData = (list: DataNode[], key: React.Key, children: DataNode[]): DataNode[] => {
+        if (list.length === 0 && children.length) {
+            return children;
+        }
         return list.map(node => {
             if (node.key === key) {
                 return {
@@ -64,7 +68,7 @@ const ScopeSidebar = () => {
                 if (response.items && Array.isArray(response.items)) {
                     treeData = mapToTreeData(response.items);
                 }
-                setTreeData(origin => updateTreeData(origin, key, treeData));
+                setTreeData(currentVal => updateTreeData(currentVal, key, treeData));
             };
 
             const fetchTreeData = async () => {
@@ -73,8 +77,8 @@ const ScopeSidebar = () => {
                     handleResponse(response);
                 } catch (error: any) {
                     AlertAction({
-                        message: error.message,
-                        title: 'Fetch error',
+                        description: error.message,
+                        message: 'Fetch error',
                         type: ALERT_TYPE_ERROR,
                     });
                 }
@@ -90,14 +94,34 @@ const ScopeSidebar = () => {
         navigate('/system/scope/' + node.key);
     };
 
+    const onDrop = (info: any) => {
+        console.log('onDrop -->', info);
+        if (info.node.isLeaf) {
+            console.log('onDrop isLeaf 1 -->', {
+                parent: info.node.key,
+                code: info.dragNode.key,
+                sort_order: info.dropPosition,
+            });
+        } else {
+            console.log('onDrop isLeaf 0 -->', {
+                parent: info.node.key,
+                code: info.dragNode.key,
+                sort_order: info.dropPosition,
+            });
+        }
+        onLoadData({ key: 'default' }).then();
+    }
+
     return (
         <div className="tree-sidebar">
             <Tree
                 onClick={onClick}
                 defaultExpandAll={true}
-                draggable
+                // draggable
                 loadData={onLoadData}
-                treeData={treeData} />
+                treeData={treeData}
+                onDrop={onDrop}
+            />
         </div>
     );
 };
