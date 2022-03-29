@@ -13,6 +13,7 @@ use EveryWorkflow\ScopeBundle\Form\ScopeFormInterface;
 use EveryWorkflow\ScopeBundle\Repository\ScopeRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class GetScopeController extends AbstractController
 {
@@ -42,7 +43,7 @@ class GetScopeController extends AbstractController
             ]
         ]
     )]
-    public function __invoke(string $code = 'default'): JsonResponse
+    public function __invoke(Request $request, string $code = 'default'): JsonResponse
     {
         $data = [];
 
@@ -53,14 +54,16 @@ class GetScopeController extends AbstractController
             }
         }
 
-        $data['data_form'] = $this->scopeForm->toArray();
-        foreach ($data['data_form']['fields'] as &$field) {
-            if ('parent' === $field['name']) {
-                $skipVals = [];
-                if ($code !== 'default') {
-                    $skipVals[] = $code;
+        if ($request->get('for') === 'data-form') {
+            $data['data_form'] = $this->scopeForm->toArray();
+            foreach ($data['data_form']['fields'] as &$field) {
+                if ('parent' === $field['name']) {
+                    $skipVals = [];
+                    if ($code !== 'default') {
+                        $skipVals[] = $code;
+                    }
+                    $field['options'] = $this->cleanUpViewingScope($field['options'], $skipVals);
                 }
-                $field['options'] = $this->cleanUpViewingScope($field['options'], $skipVals);
             }
         }
 

@@ -40,7 +40,7 @@ const ScopeForm = ({ code = 'default' }: ScopeFormProps) => {
         const fetchItem = async () => {
             try {
                 setLoading(true);
-                const response: any = await Remote.get('/scope/' + code);
+                const response: any = await Remote.get('/scope/' + code + '?for=data-form');
                 handleResponse(response);
             } catch (error: any) {
                 AlertAction({
